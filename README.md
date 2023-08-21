@@ -36,7 +36,7 @@ jobs:
           name: ${{ event.fileName }}
 
       - name: Predict BBoxes
-        action: aoxolotl/objdet_action
+        action: aoxolotl/objdet_action@latest
         inputs:
           # Download file path from the previous action.
           imagePath: ${{ variable.path }}
