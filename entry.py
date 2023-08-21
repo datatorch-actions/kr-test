@@ -122,8 +122,8 @@ def send_request(annotation_id=None):
 
                 # use a from_bbox method
                 # handles merging or creating annotations internally
-                top_left = (bbox.xmin, bbox.ymin)
-                bottom_right = (bbox.xmax, bbox.ymax)
+                top_left = (bbox["xmin"], bbox["ymin"])
+                bottom_right = (bbox.["xmax"], bbox.["ymax"])
                 b.create_bbox_from_points(top_left, bottom_right, 
                                           annotation, 
                                           label_id, file_id)
