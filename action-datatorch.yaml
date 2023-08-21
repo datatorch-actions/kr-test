@@ -1,0 +1,43 @@
+$schema: http://datatorch.io/schema/action.v1.json
+
+name: Object Detector
+description: Runs yolov5 on a given image.
+inputs:
+  imagePath:
+    type: string
+    required: true
+    description: Absolute path to image
+  points:
+    type: array
+    required: false
+    description: >
+      4 points marking the most left, right, bottom and top points of the shape. Not used for now
+  url:
+    type: string
+    default: http://localhost:3445
+    description: >
+      Url for sending requests. A docker image will be spun up on this
+      port if not found.
+  image:
+    type: string
+    default: add3000/objdet_server
+    description: Docker image to spin up.
+  labelId:
+    type: string
+    default: null
+    description: >
+      Label to assign annotation to. If not provided the detection
+      will not be inserted.
+  annotationId:
+    type: string
+    default: null
+    description: >
+      Annotation to insert detection into. If not provided the detection
+      will not be inserted.
+outputs:
+  bboxes:
+    type: array
+    description: Bounding boxes of objects detected
+runs:
+  using: python
+  main: entry.py
