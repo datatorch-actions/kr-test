@@ -66,6 +66,5 @@ jobs:
 
 | Name           | Type  | Description                                |
 | -------------- | :---: | ------------------------------------------ |
-| `bboxes` | array | List of dictionaries contained lower left and upper right
-bounds|
+| `bboxes` | array | List of dictionaries contained lower left and upper right bounds|
 
