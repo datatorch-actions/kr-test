@@ -1,18 +1,17 @@
 $schema: http://datatorch.io/schema/action.v1.json
 
-name: Object Detector
-description: Runs yolov5 on a given image.
+name: Call Server
+description: Makes a server request with a command and COCO data for the given file.
 inputs:
-  event:
+  fileId:
     type: string
     required: true
-    description: Event data to console.log
-  url:
+    description: File ID of the image where button was pressed
+  command:
     type: string
-    default: http://localhost:3445
+    default: "model command"
     description: >
-      Url for sending requests. A docker image will be spun up on this
-      port if not found.
+      A string that tells the server what model to call
   image:
     type: string
     default: add3000/objdet_server
