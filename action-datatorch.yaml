@@ -30,9 +30,9 @@ inputs:
       Annotation to insert detection into. If not provided the detection
       will not be inserted.
 outputs:
-  bboxes:
-    type: array
-    description: Bounding boxes of objects detected
+  returnText:
+    type: string
+    description: Text to return
 runs:
   using: python
   main: entry.py
