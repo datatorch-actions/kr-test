@@ -12,6 +12,10 @@ inputs:
     default: "model command"
     description: >
       A string that tells the server what model to call
+  projectId:
+    type: string
+    default: null
+    description: Project ID. Should be replaced with event.projectId later but is hardcoded for now.
   image:
     type: string
     default: add3000/objdet_server
