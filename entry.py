@@ -8,4 +8,4 @@ dt_fileId = get_input("fileId")
 command = get_input("command")
 projectId = get_input("projectId")
 
-set_output("returnText",event)
+set_output("returnText","ok")
