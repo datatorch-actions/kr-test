@@ -16,22 +16,6 @@ inputs:
     type: string
     default: null
     description: Project ID. Should be replaced with event.projectId later but is hardcoded for now.
-  image:
-    type: string
-    default: add3000/objdet_server
-    description: Docker image to spin up.
-  labelId:
-    type: string
-    default: null
-    description: >
-      Label to assign annotation to. If not provided the detection
-      will not be inserted.
-  annotationId:
-    type: string
-    default: null
-    description: >
-      Annotation to insert detection into. If not provided the detection
-      will not be inserted.
 outputs:
   returnText:
     type: string
