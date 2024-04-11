@@ -3,15 +3,10 @@ $schema: http://datatorch.io/schema/action.v1.json
 name: Object Detector
 description: Runs yolov5 on a given image.
 inputs:
-  imagePath:
+  event:
     type: string
     required: true
-    description: Absolute path to image
-  points:
-    type: array
-    required: false
-    description: >
-      4 points marking the most left, right, bottom and top points of the shape. Not used for now
+    description: Event data to console.log
   url:
     type: string
     default: http://localhost:3445
