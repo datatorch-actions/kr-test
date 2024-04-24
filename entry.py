@@ -103,5 +103,3 @@ for i, annotation in enumerate(raw_annotations):
 coco_data = {"categories": categories, "images": images}
 
 set_output("returnText", coco_data)
-
-set_output("returnText", coco_data)
