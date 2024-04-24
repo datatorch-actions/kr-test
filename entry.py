@@ -1,4 +1,4 @@
-import os, json
+import os
 
 from datatorch import get_input, agent, set_output, ApiClient
 
@@ -63,19 +63,21 @@ for i, category in enumerate(categories):
     category["supercategory"] = category.pop("parentId")
 
 # Format images field
-images = raw["projectById"]["files"]["nodes"]
-for i, image in enumerate(images):
-    image["datatorch_id"] = image.pop("id")
-    image["id"] = i + 1
-    image["datatorch_id"] = image.pop("datatorch_id")
-    image["storage_id"] = image.pop("linkId")
-    image["file_name"] = image.pop("name")
-    image["metadata"] = image.pop("metadata")
-    image["createdAt"] = image.pop("createdAt")
+raw_images = raw["projectById"]["files"]["nodes"]
+images = []
+for i, image in enumerate(raw_images):
+    images.append({
+        "id": i+1,
+        "datatorch_id": image.pop("datatorch_id"),
+        "storage_id": image.pop("linkId"),
+        "path": image.pop("path"),
+        "file_name": image.pop("name"),
+        "metadata": image.pop("metadata"),
+        "date_captured": image.pop("createdAt")
+    })
 
 
 # Create COCO JSON structure
 coco_data = {"categories": categories, "images": images}
 
 set_output("returnText", coco_data)
-
