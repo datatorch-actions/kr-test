@@ -1,5 +1,7 @@
 import os
 
+import numpy as np
+
 from datatorch import get_input, agent, set_output, ApiClient
 
 api = ApiClient()
@@ -56,31 +58,36 @@ raw = api.execute(GetNewestExport, params={"projectId": projectId, "fileId": dt_
 raw_categories = raw["projectById"]["labels"]
 categories = []
 for i, category in enumerate(raw_categories):
-    categories.append({
-        "id": i+1,
-        "datatorch_id": category.pop("id"),
-        "name": category.pop("name"),
-        "metadata": category.pop("metadata"),
-        "supercategory": category.pop("parentId")
-    })
+    categories.append(
+        {
+            "id": i + 1,
+            "datatorch_id": category.pop("id"),
+            "name": category.pop("name"),
+            "metadata": category.pop("metadata"),
+            "supercategory": category.pop("parentId"),
+        }
+    )
 
 # Format images field
 raw_images = raw["projectById"]["files"]["nodes"]
 images = []
 for i, image in enumerate(raw_images):
-    images.append({
-        "id": i+1,
-        "datatorch_id": image["id"],
-        "storage_id": image["linkId"],
-        "path": image["path"],
-        "file_name": image["name"],
-        "metadata": image["metadata"],
-        "date_captured": image["createdAt"]
-    })
+    images.append(
+        {
+            "id": i + 1,
+            "datatorch_id": image["id"],
+            "storage_id": image["linkId"],
+            "path": image["path"],
+            "file_name": image["name"],
+            "metadata": image["metadata"],
+            "date_captured": image["createdAt"],
+        }
+    )
 
 # Format annotations field
 raw_annotations = raw["projectById"]["files"]["nodes"][0]["annotations"]
 annotations = []
+
 
 # Function to get category id index
 def get_category_id_by_datatorch_label_id(categories, datatorch_id):
@@ -90,14 +97,63 @@ def get_category_id_by_datatorch_label_id(categories, datatorch_id):
     # Return -1 if no match is found
     return -1
 
+
+# Function to generate segmentation and bbox fields
+def generate_segmentation_and_bbox(sourcesJSON):
+    returnObject = {segmentation: []}  # type: ignore
+    hasPoly = False
+    hasRect = False
+    for source in sourcesJSON:
+        if source["type"] in ["PaperSegmentations"]:
+            hasPoly = True
+        if source["type"] in ["PaperBox"]:
+            hasRect = True
+    isShape = hasPoly or hasRect
+
+    if not isShape:
+        return returnObject
+    if sourcesJSON.pathData:
+        # It has a polygon which takes precidence in segmentaion field
+        returnObject.segmentation = [
+            np.array(polygon).flatten() for polygon in sourcesJSON.pathData
+        ]
+    else:
+        # It is a box only
+        returnObject.segmentation = [
+            sourcesJSON.x,
+            sourcesJSON.y,
+            sourcesJSON.x + sourcesJSON.width,
+            sourcesJSON.y,
+            sourcesJSON.x + sourcesJSON.width,
+            sourcesJSON.y + sourcesJSON.height,
+            sourcesJSON.x,
+            sourcesJSON.y + sourcesJSON.height,
+        ]
+
+    if hasRect:
+        returnObject.append(
+            [sourcesJSON.x, sourcesJSON.y, sourcesJSON.width, sourcesJSON.height]
+        )
+
+    return returnObject
+
+
 for i, annotation in enumerate(raw_annotations):
-    annotations.append({
-        "id": i+1,
+    initialAnnotation = {
+        "id": i + 1,
         "datatorch_id": annotation["id"],
         "datatorch_label_id": annotation["labelId"],
-        "image_id": 1, # There will always only be one file
-        "category_id": get_category_id_by_datatorch_label_id(categories,annotation["labelId"])
-    })
+        "image_id": 1,  # There will always only be one file
+        "category_id": get_category_id_by_datatorch_label_id(
+            categories, annotation["labelId"]
+        ),
+        "isCrowd": 0,
+        "metadata": annotation["metadata"],
+    }
+    segmentationsAndBbox = generate_segmentation_and_bbox(annotation["sourcesJSON"])
+
+    annotations.append({**initialAnnotation, **segmentationsAndBbox})
+
 
 # Create COCO JSON structure
 coco_data = {"categories": categories, "images": images, "annotations": annotations}
