@@ -27,6 +27,11 @@ query GetFileData($projectId:ID!, $fileId:String!="0e8ea8d1-6abc-4781-b7be-cee1c
   	) {
       nodes{
         id
+        linkId
+        path
+        name
+        metadata
+        createdAt
         annotations {
           id
           metadata
@@ -57,7 +62,20 @@ for i, category in enumerate(categories):
     category["metadata"] = category.pop("metadata")
     category["supercategory"] = category.pop("parentId")
 
+# Format images field
+images = raw["projectById"]["files"]["nodes"][0]
+for i, image in enumerate(images):
+    image["datatorch_id"] = image.pop("id")
+    image["id"] = i + 1
+    image["datatorch_id"] = image.pop("datatorch_id")
+    image["storage_id"] = image.pop("linkId")
+    image["file_name"] = image.pop("name")
+    image["metadata"] = image.pop("metadata")
+    image["createdAt"] = image.pop("createdAt")
+
+
 # Create COCO JSON structure
-coco_data = {"categories": categories}
+coco_data = {"categories": categories, "images": images}
 
 set_output("returnText", coco_data)
+
