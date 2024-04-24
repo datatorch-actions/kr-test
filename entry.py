@@ -70,18 +70,38 @@ images = []
 for i, image in enumerate(raw_images):
     images.append({
         "id": i+1,
-        "datatorch_id": image.pop("id"),
-        "storage_id": image.pop("linkId"),
-        "path": image.pop("path"),
-        "file_name": image.pop("name"),
-        "metadata": image.pop("metadata"),
-        "date_captured": image.pop("createdAt")
+        "datatorch_id": image["id"],
+        "storage_id": image["linkId"],
+        "path": image["path"],
+        "file_name": image["name"],
+        "metadata": image["metadata"],
+        "date_captured": image["createdAt"]
     })
 
 # Format annotations field
+raw_annotations = raw["projectById"]["files"]["nodes"][0]["annotations"]
+annotations = []
 
+# Function to get category id index
+def get_category_id_by_datatorch_label_id(categories, datatorch_id):
+    for category in categories:
+        if category.get("datatorch_id") == datatorch_id:
+            return category.get("id")
+    # Return -1 if no match is found
+    return -1
+
+for i, annotation in enumerate(raw_annotations):
+    images.append({
+        "id": i+1,
+        "datatorch_id": annotation["id"],
+        "datatorch_label_id": annotation["labelId"],
+        "image_id": 1, # There will always only be one file
+        "category_id": get_category_id_by_datatorch_label_id(categories,annotation["labelId"])
+    })
 
 # Create COCO JSON structure
 coco_data = {"categories": categories, "images": images}
+
+set_output("returnText", coco_data)
 
 set_output("returnText", coco_data)
