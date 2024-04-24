@@ -46,11 +46,14 @@ query GetFileData($projectId:ID!, $fileId:String!="0e8ea8d1-6abc-4781-b7be-cee1c
 """
 
 raw = api.execute(GetNewestExport, params={"projectId": projectId, "fileId": dt_fileId})
+
+# Format categories field
 categories = raw["projectById"]["labels"]
+for i, category in enumerate(categories):
+    category["datatorch_id"] = category.pop("id")
+    category["id"] = i + 1
 
 # Create COCO JSON structure
-coco_data = {
-    "categories": categories
-}
+coco_data = {"categories": categories}
 
 set_output("returnText", coco_data)
