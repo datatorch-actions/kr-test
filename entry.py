@@ -63,7 +63,7 @@ for i, category in enumerate(categories):
     category["supercategory"] = category.pop("parentId")
 
 # Format images field
-images = raw["projectById"]["files"]["nodes"][0]
+images = raw["projectById"]["files"]["nodes"]
 for i, image in enumerate(images):
     image["datatorch_id"] = image.pop("id")
     image["id"] = i + 1
