@@ -52,6 +52,10 @@ categories = raw["projectById"]["labels"]
 for i, category in enumerate(categories):
     category["datatorch_id"] = category.pop("id")
     category["id"] = i + 1
+    category["datatorch_id"] = category.pop("datatorch_id")
+    category["name"] = category.pop("name")
+    category["metadata"] = category.pop("metadata")
+    category["supercategory"] = category.pop("parentId")
 
 # Create COCO JSON structure
 coco_data = {"categories": categories}
