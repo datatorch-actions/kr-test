@@ -100,7 +100,7 @@ def get_category_id_by_datatorch_label_id(categories, datatorch_id):
 
 # Function to generate segmentation and bbox fields
 def generate_segmentation_and_bbox(sourcesJson):
-    returnObject = {"segmentation": []}  # type: ignore
+    returnObject = {"segmentation": []}
     hasPoly = False
     hasRect = False
     for source in sourcesJson:
@@ -112,7 +112,15 @@ def generate_segmentation_and_bbox(sourcesJson):
 
     if not isShape:
         return returnObject
-    if sourcesJson.pathData:
+
+    sourceWithPathData = None
+    for source in sourcesJson:
+        if "pathData" in source:
+            sourceWithPathData = source
+            # This wont work for multi polygon annotations for now
+            break
+
+    if sourceWithPathData is not None:
         # It has a polygon which takes precidence in segmentaion field
         returnObject.segmentation = [
             np.array(polygon).flatten() for polygon in sourcesJson.pathData
