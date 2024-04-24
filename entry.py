@@ -103,6 +103,9 @@ def generate_segmentation_and_bbox(sourcesJson):
     returnObject = {"segmentation": []}
     hasPoly = False
     hasRect = False
+    sourceWithPathData = None
+    sourceWithBoxData = None
+
     for source in sourcesJson:
         if source["type"] in ["PaperSegmentations"]:
             hasPoly = True
@@ -113,7 +116,6 @@ def generate_segmentation_and_bbox(sourcesJson):
     if not isShape:
         return returnObject
 
-    sourceWithPathData = None
     for source in sourcesJson:
         if "pathData" in source:
             sourceWithPathData = source
@@ -126,21 +128,28 @@ def generate_segmentation_and_bbox(sourcesJson):
             np.array(polygon).flatten() for polygon in sourcesJson.pathData
         ]
     else:
-        # It is a box only
-        returnObject.segmentation = [
-            sourcesJson.x,
-            sourcesJson.y,
-            sourcesJson.x + sourcesJson.width,
-            sourcesJson.y,
-            sourcesJson.x + sourcesJson.width,
-            sourcesJson.y + sourcesJson.height,
-            sourcesJson.x,
-            sourcesJson.y + sourcesJson.height,
-        ]
+        if "x" in source and "y" in source and "width" in source and "height" in source:
+            sourceWithBoxData = source
+            # It is a box only
+            returnObject.segmentation = [
+                source.x,
+                source.y,
+                source.x + source.width,
+                source.y,
+                source.x + source.width,
+                source.y + source.height,
+                source.x,
+                source.y + source.height,
+            ]
 
-    if hasRect:
+    if sourceWithBoxData is not None:
         returnObject.append(
-            [sourcesJson.x, sourcesJson.y, sourcesJson.width, sourcesJson.height]
+            [
+                sourceWithBoxData.x,
+                sourceWithBoxData.y,
+                sourceWithBoxData.width,
+                sourceWithBoxData.height,
+            ]
         )
 
     return returnObject
