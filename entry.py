@@ -68,7 +68,7 @@ images = []
 for i, image in enumerate(raw_images):
     images.append({
         "id": i+1,
-        "datatorch_id": image.pop("datatorch_id"),
+        "datatorch_id": image.pop("id"),
         "storage_id": image.pop("linkId"),
         "path": image.pop("path"),
         "file_name": image.pop("name"),
