@@ -99,11 +99,11 @@ def get_category_id_by_datatorch_label_id(categories, datatorch_id):
 
 
 # Function to generate segmentation and bbox fields
-def generate_segmentation_and_bbox(sourcesJSON):
+def generate_segmentation_and_bbox(sourcesJson):
     returnObject = {segmentation: []}  # type: ignore
     hasPoly = False
     hasRect = False
-    for source in sourcesJSON:
+    for source in sourcesJson:
         if source["type"] in ["PaperSegmentations"]:
             hasPoly = True
         if source["type"] in ["PaperBox"]:
@@ -112,27 +112,27 @@ def generate_segmentation_and_bbox(sourcesJSON):
 
     if not isShape:
         return returnObject
-    if sourcesJSON.pathData:
+    if sourcesJson.pathData:
         # It has a polygon which takes precidence in segmentaion field
         returnObject.segmentation = [
-            np.array(polygon).flatten() for polygon in sourcesJSON.pathData
+            np.array(polygon).flatten() for polygon in sourcesJson.pathData
         ]
     else:
         # It is a box only
         returnObject.segmentation = [
-            sourcesJSON.x,
-            sourcesJSON.y,
-            sourcesJSON.x + sourcesJSON.width,
-            sourcesJSON.y,
-            sourcesJSON.x + sourcesJSON.width,
-            sourcesJSON.y + sourcesJSON.height,
-            sourcesJSON.x,
-            sourcesJSON.y + sourcesJSON.height,
+            sourcesJson.x,
+            sourcesJson.y,
+            sourcesJson.x + sourcesJson.width,
+            sourcesJson.y,
+            sourcesJson.x + sourcesJson.width,
+            sourcesJson.y + sourcesJson.height,
+            sourcesJson.x,
+            sourcesJson.y + sourcesJson.height,
         ]
 
     if hasRect:
         returnObject.append(
-            [sourcesJSON.x, sourcesJSON.y, sourcesJSON.width, sourcesJSON.height]
+            [sourcesJson.x, sourcesJson.y, sourcesJson.width, sourcesJson.height]
         )
 
     return returnObject
@@ -150,7 +150,7 @@ for i, annotation in enumerate(raw_annotations):
         "isCrowd": 0,
         "metadata": annotation["metadata"],
     }
-    segmentationsAndBbox = generate_segmentation_and_bbox(annotation["sourcesJSON"])
+    segmentationsAndBbox = generate_segmentation_and_bbox(annotation["sourcesJson"])
 
     annotations.append({**initialAnnotation, **segmentationsAndBbox})
 
