@@ -91,7 +91,7 @@ def get_category_id_by_datatorch_label_id(categories, datatorch_id):
     return -1
 
 for i, annotation in enumerate(raw_annotations):
-    images.append({
+    annotations.append({
         "id": i+1,
         "datatorch_id": annotation["id"],
         "datatorch_label_id": annotation["labelId"],
@@ -100,6 +100,6 @@ for i, annotation in enumerate(raw_annotations):
     })
 
 # Create COCO JSON structure
-coco_data = {"categories": categories, "images": images}
+coco_data = {"categories": categories, "images": images, "annotations": annotations}
 
 set_output("returnText", coco_data)
