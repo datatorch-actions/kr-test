@@ -50,9 +50,7 @@ categories = raw["projectById"]["labels"]
 
 # Create COCO JSON structure
 coco_data = {
-    "categories": categories,
-    "images": images,
-    "annotations": annotations,
+    "categories": categories
 }
 
 set_output("returnText", categories)
