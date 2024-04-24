@@ -53,4 +53,4 @@ coco_data = {
     "categories": categories
 }
 
-set_output("returnText", categories)
+set_output("returnText", coco_data)
