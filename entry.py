@@ -1,4 +1,4 @@
-import os
+import os, json
 
 from datatorch import get_input, agent, set_output, ApiClient
 
@@ -12,7 +12,7 @@ projectId = get_input("projectId")
 
 # Query to get file and annotation data to be converted to COCO
 GetNewestExport = """
-  query GetFileData($projectId:ID!, $fileId:String!="0e8ea8d1-6abc-4781-b7be-cee1c65b2949",){
+query GetFileData($projectId:ID!, $fileId:String!="0e8ea8d1-6abc-4781-b7be-cee1c65b2949",){
   projectById(id:$projectId) {
     files(input: 
       { 
@@ -35,10 +35,24 @@ GetNewestExport = """
         }
       }
     }
+    labels {
+      id
+      name
+      metadata
+      parentId
+    }
   }
 }
 """
 
 raw = api.execute(GetNewestExport, params={"projectId": projectId, "fileId": dt_fileId})
+categories = raw["projectById"]["labels"]
 
-set_output("returnText", raw)
+# Create COCO JSON structure
+coco_data = {
+    "categories": categories,
+    "images": images,
+    "annotations": annotations,
+}
+
+set_output("returnText", categories)
