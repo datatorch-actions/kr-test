@@ -53,14 +53,16 @@ query GetFileData($projectId:ID!, $fileId:String!="0e8ea8d1-6abc-4781-b7be-cee1c
 raw = api.execute(GetNewestExport, params={"projectId": projectId, "fileId": dt_fileId})
 
 # Format categories field
-categories = raw["projectById"]["labels"]
-for i, category in enumerate(categories):
-    category["datatorch_id"] = category.pop("id")
-    category["id"] = i + 1
-    category["datatorch_id"] = category.pop("datatorch_id")
-    category["name"] = category.pop("name")
-    category["metadata"] = category.pop("metadata")
-    category["supercategory"] = category.pop("parentId")
+raw_categories = raw["projectById"]["labels"]
+categories = []
+for i, category in enumerate(raw_categories):
+    categories.append({
+        "id": i+1,
+        "datatorch_id": category.pop("id"),
+        "name": category.pop("name"),
+        "metadata": category.pop("metadata"),
+        "supercategory": category.pop("parentId")
+    })
 
 # Format images field
 raw_images = raw["projectById"]["files"]["nodes"]
@@ -75,6 +77,8 @@ for i, image in enumerate(raw_images):
         "metadata": image.pop("metadata"),
         "date_captured": image.pop("createdAt")
     })
+
+# Format annotations field
 
 
 # Create COCO JSON structure
