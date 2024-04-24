@@ -100,7 +100,7 @@ def get_category_id_by_datatorch_label_id(categories, datatorch_id):
 
 # Function to generate segmentation and bbox fields
 def generate_segmentation_and_bbox(sourcesJson):
-    returnObject = {segmentation: []}  # type: ignore
+    returnObject = {"segmentation": []}  # type: ignore
     hasPoly = False
     hasRect = False
     for source in sourcesJson:
