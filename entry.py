@@ -137,14 +137,14 @@ def generate_segmentation_and_bbox(sourcesJson):
                 sourceWithBoxData = source
                 # It is a box only
                 returnObject.segmentation = [
-                    source.x,
-                    source.y,
-                    source.x + source.width,
-                    source.y,
-                    source.x + source.width,
-                    source.y + source.height,
-                    source.x,
-                    source.y + source.height,
+                    source["x"],
+                    source["y"],
+                    source["x"] + source["width"],
+                    source["y"],
+                    source["x"] + source["width"],
+                    source["y"] + source["height"],
+                    source["x"],
+                    source["y"] + source["height"],
                 ]
 
     if sourceWithBoxData is not None:
