@@ -111,6 +111,7 @@ def generate_segmentation_and_bbox(sourcesJson):
             hasPoly = True
         if source["type"] in ["PaperBox"]:
             hasRect = True
+
     isShape = hasPoly or hasRect
 
     if not isShape:
@@ -120,27 +121,31 @@ def generate_segmentation_and_bbox(sourcesJson):
         if "pathData" in source:
             sourceWithPathData = source
             # This wont work for multi polygon annotations for now
-            break
 
-    if sourceWithPathData is not None:
-        # It has a polygon which takes precidence in segmentaion field
-        returnObject.segmentation = [
-            np.array(polygon).flatten() for polygon in sourcesJson.pathData
-        ]
-    else:
-        if "x" in source and "y" in source and "width" in source and "height" in source:
-            sourceWithBoxData = source
-            # It is a box only
+        if sourceWithPathData is not None:
+            # It has a polygon which takes precidence in segmentaion field
             returnObject.segmentation = [
-                source.x,
-                source.y,
-                source.x + source.width,
-                source.y,
-                source.x + source.width,
-                source.y + source.height,
-                source.x,
-                source.y + source.height,
+                np.array(polygon).flatten() for polygon in sourcesJson.pathData
             ]
+        else:
+            if (
+                "x" in source
+                and "y" in source
+                and "width" in source
+                and "height" in source
+            ):
+                sourceWithBoxData = source
+                # It is a box only
+                returnObject.segmentation = [
+                    source.x,
+                    source.y,
+                    source.x + source.width,
+                    source.y,
+                    source.x + source.width,
+                    source.y + source.height,
+                    source.x,
+                    source.y + source.height,
+                ]
 
     if sourceWithBoxData is not None:
         returnObject.append(
@@ -151,7 +156,6 @@ def generate_segmentation_and_bbox(sourcesJson):
                 sourceWithBoxData.height,
             ]
         )
-
     return returnObject
 
 
