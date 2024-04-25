@@ -125,7 +125,7 @@ def generate_segmentation_and_bbox(sourcesJson):
         if sourceWithPathData is not None:
             # It has a polygon which takes precidence in segmentaion field
             returnObject["segmentation"] = [
-                np.array(polygon).flatten() for polygon in sourcesJson.pathData
+                np.array(polygon).flatten() for polygon in sourcesJson["pathData"]
             ]
         else:
             if (
