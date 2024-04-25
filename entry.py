@@ -13,7 +13,7 @@ command = get_input("command")
 projectId = get_input("projectId")
 
 # Query to get file and annotation data to be converted to COCO
-GetNewestExport = """
+GetFileDataFromDataTorch = """
 query GetFileData($projectId:ID!, $fileId:String!="0e8ea8d1-6abc-4781-b7be-cee1c65b2949",){
   projectById(id:$projectId) {
     files(input: 
@@ -52,7 +52,7 @@ query GetFileData($projectId:ID!, $fileId:String!="0e8ea8d1-6abc-4781-b7be-cee1c
 }
 """
 
-raw = api.execute(GetNewestExport, params={"projectId": projectId, "fileId": dt_fileId})
+raw = api.execute(GetFileDataFromDataTorch, params={"projectId": projectId, "fileId": dt_fileId})
 
 # Format categories field
 raw_categories = raw["projectById"]["labels"]
