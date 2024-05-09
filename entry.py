@@ -14,7 +14,7 @@ projectId = get_input("projectId")
 
 # Query to get file and annotation data to be converted to COCO
 GetFileDataFromDataTorch = """
-query GetFileData($projectId:ID!, $fileId:ID!){
+query GetFileData($projectId:ID!, $fileId:String!){
   projectById(id:$projectId) {
     files(input: 
       { 
